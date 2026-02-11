@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Be My Valentine? 💕</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            height: 100dvh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Main question screen */
+        #mainScreen {
+            background-color: #FFB7C5;
+            width: 100%;
+            height: 100vh;
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .question {
+            font-size: 3.5rem;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            margin-bottom: 3rem;
+            z-index: 10;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .buttons-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            z-index: 10;
+            position: relative;
+            min-height: 60px;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            font-size: 1.4rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            touch-action: manipulation;
+        }
+
+        .btn:hover {
+            transform: scale(1.1);
+        }
+
+        #yesBtn {
+            background-color: #FF69B4;
+            color: white;
+        }
+
+        #noBtn {
+            background-color: #FF91A4;
+            color: white;
+            transition: none;
+        }
+
+        #noBtn.moving {
+            position: fixed;
+            z-index: 100;
+        }
+
+        /* Falling hearts animation */
+        .heart {
+            position: absolute;
+            font-size: 30px;
+            animation: fall linear;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(calc(100vh + 100px)) rotate(360deg);
+            }
+        }
+
+        /* Video screen */
+        #videoScreen {
+            display: none;
+            width: 100%;
+            height: 100vh;
+            height: 100dvh;
+            background-color: #000;
+            position: relative;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        #myVideo {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .video-text {
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 2.5rem;
+            text-align: center;
+            z-index: 20;
+            pointer-events: none;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.8);
+            width: 90%;
+        }
+
+        .fade-in-out {
+            animation: fadeInOut 3s ease-in-out;
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease-in forwards;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        /* Final screen */
+        #finalScreen {
+            display: none;
+            width: 100%;
+            height: 100vh;
+            height: 100dvh;
+            background-color: white;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .final-message {
+            font-size: 3rem;
+            color: #FFB7C5;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .question {
+                font-size: 2rem;
+                margin-bottom: 2rem;
+                padding: 0 15px;
+            }
+            .buttons-container {
+                gap: 1.5rem;
+            }
+            .btn {
+                padding: 0.9rem 2rem;
+                font-size: 1.2rem;
+            }
+            .video-text {
+                font-size: 1.8rem;
+                top: 5%;
+            }
+            .final-message {
+                font-size: 2rem;
+            }
+            .heart {
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .question {
+                font-size: 1.6rem;
+            }
+            .btn {
+                padding: 0.8rem 1.5rem;
+                font-size: 1rem;
+            }
+            .video-text {
+                font-size: 1.4rem;
+            }
+            .final-message {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Question Screen -->
+    <div id="mainScreen">
+        <h1 class="question">Will you be my Valentine?</h1>
+        <div class="buttons-container">
+            <button class="btn" id="yesBtn">Yes</button>
+            <button class="btn" id="noBtn">No</button>
+        </div>
+    </div>
+
+    <!-- Video Screen -->
+    <div id="videoScreen">
+        <div id="yayText" class="video-text fade-in-out">Yay :)</div>
+        <div id="loveText" class="video-text" style="display: none;">I love you ❤️</div>
+        <video id="myVideo" playsinline webkit-playsinline>
+            <source src="your-video.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <!-- Final Screen -->
+    <div id="finalScreen">
+        <h1 class="final-message">I love you my Valentine</h1>
+    </div>
+
+    <script>
+        // Heart colors for Valentine's Day
+        const heartColors = ['#FF1493', '#FF69B4', '#FFB6C1', '#FFC0CB', '#FF6B6B', '#FF91A4', '#E75480', '#DE3163'];
+        const heartSymbols = ['❤️', '💕', '💖', '💗', '💝', '💘', '💓', '💞'];
+
+        // Create falling hearts
+        function createHeart() {
+            const mainScreen = document.getElementById('mainScreen');
+            if (mainScreen.style.display === 'none') return;
+            
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.top = '-50px';
+            heart.style.color = heartColors[Math.floor(Math.random() * heartColors.length)];
+            heart.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+            heart.style.animationDuration = (Math.random() * 3 + 4) + 's';
+            heart.style.fontSize = (Math.random() * 20 + 20) + 'px';
+            mainScreen.appendChild(heart);
+
+            // Remove heart after animation
+            setTimeout(() => {
+                heart.remove();
+            }, 7000);
+        }
+
+        // Create hearts continuously
+        setInterval(createHeart, 250);
+
+        // Move the "No" button when trying to click/touch it
+        function moveNoButton() {
+            const noBtn = document.getElementById('noBtn');
+            
+            // Add moving class to make it fixed position
+            noBtn.classList.add('moving');
+            
+            const btnWidth = noBtn.offsetWidth;
+            const btnHeight = noBtn.offsetHeight;
+            const padding = 20;
+            
+            const maxX = window.innerWidth - btnWidth - padding;
+            const maxY = window.innerHeight - btnHeight - padding;
+            
+            let randomX = Math.random() * maxX;
+            let randomY = Math.random() * maxY;
+            
+            // Make sure it stays within bounds
+            randomX = Math.max(padding, Math.min(randomX, maxX));
+            randomY = Math.max(padding, Math.min(randomY, maxY));
+            
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+        }
+
+        // Handle "Yes" button click
+        function handleYes() {
+            // Hide main screen
+            document.getElementById('mainScreen').style.display = 'none';
+            
+            // Show video screen
+            const videoScreen = document.getElementById('videoScreen');
+            videoScreen.style.display = 'flex';
+            
+            // Start video
+            const video = document.getElementById('myVideo');
+            video.play();
+            
+            // Show "Yay :)" text for 3 seconds
+            setTimeout(() => {
+                document.getElementById('yayText').style.display = 'none';
+                const loveText = document.getElementById('loveText');
+                loveText.style.display = 'block';
+                loveText.classList.add('fade-in');
+            }, 3000);
+            
+            // When video ends, show final screen
+            video.addEventListener('ended', function() {
+                videoScreen.style.display = 'none';
+                document.getElementById('finalScreen').style.display = 'flex';
+            });
+        }
+
+        // Event listeners
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+
+        // Yes button - click and touch
+        yesBtn.addEventListener('click', handleYes);
+        yesBtn.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            handleYes();
+        });
+
+        // No button - move on hover (desktop) and touch (mobile)
+        noBtn.addEventListener('mouseenter', moveNoButton);
+        noBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            moveNoButton();
+        });
+        noBtn.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            moveNoButton();
+        });
+        noBtn.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            moveNoButton();
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            const noBtn = document.getElementById('noBtn');
+            if (noBtn.classList.contains('moving')) {
+                // Keep button in bounds after resize
+                const btnWidth = noBtn.offsetWidth;
+                const btnHeight = noBtn.offsetHeight;
+                const currentLeft = parseInt(noBtn.style.left) || 0;
+                const currentTop = parseInt(noBtn.style.top) || 0;
+                
+                const maxX = window.innerWidth - btnWidth - 20;
+                const maxY = window.innerHeight - btnHeight - 20;
+                
+                if (currentLeft > maxX) noBtn.style.left = maxX + 'px';
+                if (currentTop > maxY) noBtn.style.top = maxY + 'px';
+            }
+        });
+    </script>
+</body>
+</html>
